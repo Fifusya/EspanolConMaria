@@ -1,0 +1,1115 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Мари — испанский с нуля</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* === ПЕРЕМЕННЫЕ — здесь можно менять цвета === */
+  :root {
+    --bg: #faf8f5;
+    --bg-card: #ffffff;
+    --text: #1a1a1a;
+    --text-muted: #6b6b6b;
+    --accent: #c9a961;
+    --accent-dark: #a8893f;
+    --border: #e8e4dc;
+    --shadow: 0 4px 24px rgba(0,0,0,0.04);
+    --shadow-hover: 0 8px 32px rgba(0,0,0,0.08);
+    --radius: 4px;
+    --max-width: 1100px;
+    --font-serif: 'Cormorant Garamond', Georgia, serif;
+    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  
+  html { scroll-behavior: smooth; }
+  
+  body {
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--text);
+    background: var(--bg);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3 {
+    font-family: var(--font-serif);
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    line-height: 1.15;
+  }
+
+  /* === МЕНЯЮЩЕЕСЯ СЛОВО В ЗАГОЛОВКЕ === */
+  .rotating-word {
+    display: inline-block;
+    position: relative;
+    vertical-align: baseline;
+    min-width: 280px;
+    text-align: left;
+  }
+  @media (max-width: 768px) {
+    .rotating-word {
+      min-width: auto;
+      display: inline;
+    }
+  }
+  .rw-item {
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+  .rw-item.active {
+    opacity: 1;
+    transform: translateY(0);
+    position: relative;
+    pointer-events: auto;
+  }
+  .rw-item.leaving {
+    opacity: 0;
+    transform: translateY(-20px);
+    position: absolute;
+  }
+
+  /* === ИСПАНСКИЕ ПОДПИСИ К СЕКЦИЯМ === */
+  .es-label {
+    display: block;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 22px;
+    color: var(--accent);
+    margin-bottom: 8px;
+    font-weight: 400;
+    opacity: 0.85;
+  }
+
+  /* === БОЛЬШАЯ ДЕКОРАТИВНАЯ БУКВА НА ФОНЕ === */
+  .deco-letter {
+    position: absolute;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    color: var(--accent);
+    opacity: 0.06;
+    pointer-events: none;
+    user-select: none;
+    line-height: 0.8;
+    z-index: 0;
+  }
+  .deco-letter.ene {
+    font-size: clamp(200px, 30vw, 380px);
+    top: -40px;
+    right: -30px;
+    transform: rotate(-8deg);
+  }
+  .deco-letter.question {
+    font-size: clamp(180px, 25vw, 320px);
+    bottom: -60px;
+    left: -20px;
+    transform: rotate(12deg);
+  }
+  .deco-letter.hola {
+    font-size: clamp(120px, 18vw, 240px);
+    top: 50%;
+    right: 5%;
+    transform: translateY(-50%) rotate(-5deg);
+  }
+
+  /* === НАВЕДЕНИЕ НА ВСЁ ЧТО КЛИКАБЕЛЬНО === */
+  a, button, .credential-thumb, .price-card, .how-card, .whom-item {
+    cursor: pointer;
+  }
+
+  .container {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* === НАВИГАЦИЯ === */
+  .nav {
+    position: sticky;
+    top: 0;
+    background: rgba(250,248,245,0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+    z-index: 100;
+    padding: 16px 0;
+  }
+  .nav-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .logo {
+    font-family: var(--font-serif);
+    font-size: 22px;
+    font-weight: 500;
+  }
+  .nav-cta {
+    background: var(--text);
+    color: var(--bg);
+    padding: 10px 20px;
+    border-radius: var(--radius);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+  }
+  .nav-cta:hover {
+    background: var(--accent-dark);
+  }
+
+  /* === ГЕРОЙ === */
+  .hero {
+    padding: 80px 0 80px;
+  }
+  .hero-inner {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+  .hero-text {
+    text-align: left;
+  }
+  .hero-eyebrow {
+    display: inline-block;
+    font-size: 13px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent-dark);
+    margin-bottom: 24px;
+    font-weight: 500;
+  }
+  .hero h1 {
+    font-size: clamp(36px, 5vw, 60px);
+    margin-bottom: 24px;
+  }
+  .hero h1 em {
+    font-style: italic;
+    color: var(--accent-dark);
+  }
+  .hero-sub {
+    font-size: clamp(17px, 2vw, 20px);
+    color: var(--text-muted);
+    margin: 0 0 40px;
+    line-height: 1.5;
+    max-width: 540px;
+  }
+  .hero-image {
+    aspect-ratio: 4/5;
+    border-radius: var(--radius);
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: var(--bg);
+  }
+  .hero-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center bottom;
+    display: block;
+    filter: grayscale(10%);
+    transition: filter 0.4s ease;
+  }
+  .hero-image:hover img {
+    filter: grayscale(0%);
+  }
+  .btn-primary {
+    display: inline-block;
+    background: var(--text);
+    color: var(--bg);
+    padding: 16px 36px;
+    border-radius: var(--radius);
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    border: none;
+    cursor: pointer;
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-hover);
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-hover);
+  }
+  .hero-note {
+    margin-top: 20px;
+    font-size: 14px;
+    color: var(--text-muted);
+  }
+
+  /* === СЕКЦИИ === */
+  section {
+    padding: 80px 0;
+  }
+  .section-eyebrow {
+    font-size: 13px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent-dark);
+    margin-bottom: 16px;
+    font-weight: 500;
+  }
+  .section-title {
+    font-size: clamp(28px, 4vw, 44px);
+    margin-bottom: 60px;
+    max-width: 700px;
+  }
+  .section-lead {
+    font-size: 17px;
+    color: var(--text-muted);
+    margin-top: -40px;
+    margin-bottom: 50px;
+    max-width: 700px;
+    line-height: 1.5;
+  }
+
+  /* === ДЛЯ КОГО === */
+  .for-whom {
+    background: var(--bg-card);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .whom-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 32px;
+    margin-top: 40px;
+  }
+  .whom-item {
+    padding: 32px 0;
+    border-top: 2px solid var(--accent);
+  }
+  .whom-item h3 {
+    font-size: 22px;
+    margin-bottom: 12px;
+  }
+  .whom-item p {
+    color: var(--text-muted);
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* === ПРАВИЛА РАБОТЫ === */
+  .rules {
+    background: var(--bg-card);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .rules-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 32px;
+    margin-top: 40px;
+  }
+  .rule-item {
+    padding: 32px;
+    background: var(--bg);
+    border-radius: var(--radius);
+    border-left: 3px solid var(--accent);
+  }
+  .rule-item h3 {
+    font-size: 20px;
+    margin-bottom: 14px;
+    color: var(--text);
+  }
+  .rule-item p {
+    color: var(--text-muted);
+    font-size: 15px;
+    line-height: 1.65;
+  }
+
+  /* === СКРИНШОТЫ УРОКОВ === */
+  .lessons-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    margin-top: 40px;
+  }
+  .lesson-shot {
+    aspect-ratio: 16/10;
+    border-radius: var(--radius);
+    overflow: hidden;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    background: var(--bg-card);
+    transition: all 0.3s ease;
+    position: relative;
+  }
+  .lesson-shot:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-hover);
+    border-color: var(--accent);
+  }
+  .lesson-shot img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.4s ease;
+  }
+  .lesson-shot:hover img {
+    transform: scale(1.03);
+  }
+  .lessons-note {
+    text-align: center;
+    margin-top: 24px;
+    font-size: 14px;
+    color: var(--text-muted);
+    font-style: italic;
+  }
+
+  /* === КАК ПРОХОДЯТ === */
+  .how-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 24px;
+    margin-top: 40px;
+  }
+  .how-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 32px 28px;
+    transition: all 0.3s ease;
+  }
+  .how-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-hover);
+    border-color: var(--accent);
+  }
+  .how-number {
+    font-family: var(--font-serif);
+    font-size: 32px;
+    color: var(--accent);
+    margin-bottom: 12px;
+    font-weight: 500;
+  }
+  .how-card h3 {
+    font-size: 20px;
+    margin-bottom: 12px;
+  }
+  .how-card p {
+    color: var(--text-muted);
+    font-size: 15px;
+  }
+
+  /* === ОБО МНЕ === */
+  .about {
+    background: var(--bg-card);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+  }
+  .about-image {
+    aspect-ratio: 4/5;
+    border-radius: var(--radius);
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: var(--bg);
+  }
+  .about-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center bottom;
+    display: block;
+    filter: grayscale(15%);
+    transition: filter 0.4s ease;
+  }
+  .about-image:hover img {
+    filter: grayscale(0%);
+  }
+  .about-text h2 {
+    font-size: clamp(28px, 4vw, 40px);
+    margin-bottom: 24px;
+  }
+  .about-text p {
+    color: var(--text-muted);
+    margin-bottom: 16px;
+    font-size: 16px;
+    line-height: 1.7;
+  }
+  .about-credentials {
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+  }
+  .credential {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 12px;
+  }
+  .credential-num {
+    font-family: var(--font-serif);
+    font-size: 24px;
+    color: var(--accent-dark);
+    font-weight: 500;
+    min-width: 30px;
+  }
+  .credential-text {
+    color: var(--text);
+    font-size: 15px;
+    flex: 1;
+  }
+  .credential-thumb {
+    width: 56px;
+    height: 56px;
+    border-radius: 6px;
+    overflow: hidden;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+    background: var(--bg);
+  }
+  .credential-thumb:hover {
+    transform: scale(1.05);
+    box-shadow: var(--shadow);
+  }
+  .credential-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* === МОДАЛКА ДЛЯ УВЕЛИЧЕНИЯ ДИПЛОМА === */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+    cursor: pointer;
+    backdrop-filter: blur(4px);
+  }
+  .modal-overlay.active {
+    display: flex;
+  }
+  .modal-overlay img {
+    max-width: 90%;
+    max-height: 90vh;
+    border-radius: 4px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  }
+  .modal-close {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    color: white;
+    font-size: 40px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    line-height: 1;
+    font-weight: 300;
+  }
+
+  /* === ФОРМАТЫ === */
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+    margin-top: 40px;
+  }
+  .price-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 40px 32px;
+    text-align: center;
+    transition: all 0.3s ease;
+    position: relative;
+  }
+  .price-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-hover);
+  }
+  .price-card.featured {
+    border-color: var(--accent);
+    border-width: 2px;
+  }
+  .price-badge {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--accent);
+    color: white;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 4px 14px;
+    border-radius: 20px;
+    letter-spacing: 0.05em;
+  }
+  .price-card h3 {
+    font-size: 24px;
+    margin-bottom: 8px;
+  }
+  .price-desc {
+    color: var(--text-muted);
+    font-size: 14px;
+    margin-bottom: 24px;
+  }
+  .price-amount {
+    font-family: var(--font-serif);
+    font-size: 48px;
+    color: var(--text);
+    font-weight: 500;
+    margin-bottom: 4px;
+    transition: color 0.3s ease;
+  }
+  .price-unit {
+    color: var(--text-muted);
+    font-size: 14px;
+    margin-bottom: 24px;
+  }
+  .price-features {
+    list-style: none;
+    text-align: left;
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+  }
+  .price-features li {
+    padding: 8px 0;
+    color: var(--text);
+    font-size: 14px;
+    position: relative;
+    padding-left: 24px;
+  }
+  .price-features li::before {
+    content: "—";
+    position: absolute;
+    left: 0;
+    color: var(--accent-dark);
+  }
+
+  /* === ОТЗЫВЫ === */
+  .reviews {
+    background: var(--bg-card);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .reviews-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 24px;
+    margin-top: 40px;
+  }
+  .review {
+    padding: 32px;
+    background: var(--bg);
+    border-radius: var(--radius);
+    border-left: 3px solid var(--accent);
+    display: flex;
+    flex-direction: column;
+  }
+  .review-text {
+    font-family: var(--font-serif);
+    font-size: 17px;
+    line-height: 1.55;
+    color: var(--text);
+    margin-bottom: 20px;
+    font-style: italic;
+    flex: 1;
+  }
+  .review-text strong {
+    font-weight: 600;
+    color: var(--text);
+    font-style: italic;
+    background: linear-gradient(180deg, transparent 60%, rgba(201, 169, 97, 0.25) 60%);
+    padding: 0 2px;
+  }
+  .review-author {
+    font-size: 14px;
+    color: var(--text-muted);
+    font-weight: 500;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    margin-top: auto;
+  }
+  .reviews-placeholder {
+    text-align: center;
+    padding: 60px 32px;
+    background: var(--bg);
+    border-radius: var(--radius);
+    border: 1px dashed var(--border);
+    color: var(--text-muted);
+    font-style: italic;
+  }
+
+  /* === ФИНАЛЬНЫЙ CTA === */
+  .final-cta {
+    padding: 100px 0;
+  }
+  .final-cta-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+  .final-cta-text {
+    text-align: left;
+  }
+  .final-cta h2 {
+    font-size: clamp(32px, 5vw, 52px);
+    margin-bottom: 24px;
+  }
+  .final-cta p {
+    font-size: 18px;
+    color: var(--text-muted);
+    margin-bottom: 40px;
+    max-width: 540px;
+    line-height: 1.5;
+  }
+  .final-cta-image {
+    aspect-ratio: 4/5;
+    border-radius: var(--radius);
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: var(--bg);
+  }
+  .final-cta-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center bottom;
+    display: block;
+    filter: grayscale(10%);
+    transition: filter 0.4s ease;
+  }
+  .final-cta-image:hover img {
+    filter: grayscale(0%);
+  }
+
+  /* === ФУТЕР === */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 40px 0;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 14px;
+  }
+
+  /* === АДАПТИВ === */
+  @media (max-width: 768px) {
+    section {
+      padding: 60px 0;
+    }
+    .hero {
+      padding: 40px 0 60px;
+    }
+    .hero-inner {
+      grid-template-columns: 1fr;
+      gap: 40px;
+    }
+    .hero-text {
+      text-align: center;
+    }
+    .hero-sub {
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .hero-image {
+      max-width: 320px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    .final-cta-inner {
+      grid-template-columns: 1fr;
+      gap: 40px;
+    }
+    .final-cta-text {
+      text-align: center;
+    }
+    .final-cta p {
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .final-cta-image {
+      max-width: 320px;
+      margin: 0 auto;
+      width: 100%;
+      order: -1;
+    }
+    .about-grid {
+      grid-template-columns: 1fr;
+      gap: 40px;
+    }
+    .about-image {
+      max-width: 320px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    .section-title {
+      margin-bottom: 40px;
+    }
+    .btn-primary {
+      width: 100%;
+      padding: 18px 24px;
+    }
+    .nav-cta {
+      padding: 8px 14px;
+      font-size: 13px;
+    }
+  }
+
+  /* === АНИМАЦИИ ПОЯВЛЕНИЯ === */
+  .fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>
+</head>
+<body>
+
+<!-- НАВИГАЦИЯ -->
+<nav class="nav">
+  <div class="container nav-inner">
+    <div class="logo">español con Marí</div>
+    <a href="https://t.me/fifusya" target="_blank" class="nav-cta">Написать мне</a>
+  </div>
+</nav>
+
+<!-- ГЕРОЙ -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-inner">
+      <div class="hero-text">
+        <div class="hero-eyebrow">испанский язык · онлайн</div>
+        <h1>Заговорить на испанском — <em>с нуля и без страха</em></h1>
+        <p class="hero-sub">Перестань откладывать мечту на потом — испанский давно ждёт именно тебя.</p>
+        <a href="https://t.me/fifusya" target="_blank" class="btn-primary">Записаться на первое занятие</a>
+        <div class="hero-note">Знакомство и определение уровня · 40 минут · 1 300 ₽</div>
+      </div>
+      <div class="hero-image">
+        <img src="https://i.ibb.co/DPzFQjM0/IMG-7734.jpg" alt="Мари — преподаватель испанского">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ДЛЯ КОГО -->
+<section class="for-whom">
+  <div class="container">
+    <div class="section-eyebrow">для кого</div>
+    <h2 class="section-title">Помогу заговорить — от первого "hola" до уверенного общения</h2>
+    <p class="section-lead">Работаю с уровнями от A0 до B1 — с начинающими и продолжающими</p>
+    
+    <div class="whom-grid">
+      <div class="whom-item">
+        <h3>Начинающим с нуля</h3>
+        <p>Если ты никогда не учил испанский, но давно хочешь — начнём с самого простого и спокойного темпа. Никаких "надо было ещё в школе".</p>
+      </div>
+      <div class="whom-item">
+        <h3>Продолжающим</h3>
+        <p>Учишь испанский уже какое-то время — самостоятельно, на курсах или давно в школе. Восстановим основу, заполним пробелы и пойдём дальше — спокойно и системно.</p>
+      </div>
+      <div class="whom-item">
+        <h3>Для путешествий и жизни</h3>
+        <p>Хочешь свободно общаться в Испании, Латинской Америке или с друзьями-носителями. Делаю акцент на разговорной практике.</p>
+      </div>
+      <div class="whom-item">
+        <h3>Для работы и переезда</h3>
+        <p>Учишь язык под конкретную цель — собеседование, релокация, работа с испаноязычными клиентами. Подбираем материалы под задачу.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- КАК ПРОХОДЯТ -->
+<section>
+  <div class="container">
+    <div class="section-eyebrow">как проходят занятия</div>
+    <h2 class="section-title">Современный формат — всё в одном пространстве</h2>
+    
+    <div class="how-grid">
+      <div class="how-card">
+        <div class="how-number">01</div>
+        <h3>Онлайн в Miro</h3>
+        <p>Работаем на интерактивной платформе — все материалы, упражнения и заметки в одном месте, всегда под рукой.</p>
+      </div>
+      <div class="how-card">
+        <div class="how-number">02</div>
+        <h3>Живые материалы</h3>
+        <p>Не учебник 90-х, а актуальные тексты, видео, песни, подкасты. Язык, на котором действительно говорят.</p>
+      </div>
+      <div class="how-card">
+        <div class="how-number">03</div>
+        <h3>Интерактивные домашки</h3>
+        <p>Красивые задания которые не хочется откладывать. Сделать домашку — не "надо", а интересно.</p>
+      </div>
+      <div class="how-card">
+        <div class="how-number">04</div>
+        <h3>Гибкий формат</h3>
+        <p>Индивидуально, в паре или в небольшой группе — выбираешь как комфортнее. Можно менять по ходу.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- СКРИНШОТЫ УРОКОВ -->
+<section>
+  <div class="container">
+    <div class="section-eyebrow">примеры уроков</div>
+    <h2 class="section-title">Как выглядит учебное пространство</h2>
+    
+    <div class="lessons-grid">
+      <div class="lesson-shot" onclick="openModal('https://i.ibb.co/5gKy9GtS/2026-05-24-11-57-43.png')">
+        <img src="https://i.ibb.co/5gKy9GtS/2026-05-24-11-57-43.png" alt="Пример урока испанского">
+      </div>
+      <div class="lesson-shot" onclick="openModal('https://i.ibb.co/Tq0VJTCt/2026-05-24-11-56-47.png')">
+        <img src="https://i.ibb.co/Tq0VJTCt/2026-05-24-11-56-47.png" alt="Пример урока испанского">
+      </div>
+      <div class="lesson-shot" onclick="openModal('https://i.ibb.co/MkXygR6Z/2026-05-24-11-55-24.png')">
+        <img src="https://i.ibb.co/MkXygR6Z/2026-05-24-11-55-24.png" alt="Пример урока испанского">
+      </div>
+    </div>
+    
+    <p class="lessons-note">Нажми на любое изображение, чтобы рассмотреть подробнее</p>
+  </div>
+</section>
+
+<!-- ОБО МНЕ -->
+<section class="about">
+  <div class="container">
+    <div class="about-grid">
+      <div class="about-image">
+        <img src="https://i.ibb.co/DDfNKS1D/IMG-7750.jpg" alt="Мари — преподаватель испанского">
+      </div>
+      <div class="about-text">
+        <div class="section-eyebrow">обо мне</div>
+        <h2>Привет, я Мари</h2>
+        <p>Преподаю испанский язык уже 5 лет. За это время помогла десяткам учеников заговорить — от тех кто начинал "с алфавита", до тех кто использует язык в работе и путешествиях.</p>
+        <p>Мой подход — спокойный, без давления и стыда за ошибки. Считаю, что язык учится через интерес и регулярность, а не через страх.</p>
+        
+        <div class="about-credentials">
+          <div class="credential">
+            <span class="credential-num">МГУ</span>
+            <span class="credential-text">Красный диплом факультета иностранных языков и регионоведения (ФИЯР)</span>
+            <div class="credential-thumb" onclick="openModal('https://i.ibb.co/B2Fr3t6h/8-CB1-AA4-B-A3-AE-4-D04-BA93-9-EFC9-F93-AC43-1-105-c.jpg')" title="Посмотреть диплом">
+              <img src="https://i.ibb.co/B2Fr3t6h/8-CB1-AA4-B-A3-AE-4-D04-BA93-9-EFC9-F93-AC43-1-105-c.jpg" alt="Диплом МГУ">
+            </div>
+          </div>
+          <div class="credential">
+            <span class="credential-num">МГИМО</span>
+            <span class="credential-text">Магистратура "Международная журналистика" — продолжаю работать с языком через современные медиа и иностранные источники</span>
+          </div>
+          <div class="credential">
+            <span class="credential-num">DELE</span>
+            <span class="credential-text">Международный сертификат DELE уровня B2 — официально подтверждённое владение испанским</span>
+            <div class="credential-thumb" onclick="openModal('https://i.ibb.co/SXvQ429s/IMG-0045.jpg')" title="Посмотреть сертификат">
+              <img src="https://i.ibb.co/SXvQ429s/IMG-0045.jpg" alt="Сертификат DELE B2">
+            </div>
+          </div>
+          <div class="credential">
+            <span class="credential-num">5 лет</span>
+            <span class="credential-text">Опыта преподавания испанского — индивидуально и в группах</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ФОРМАТЫ И ЦЕНЫ -->
+<section>
+  <div class="container">
+    <div class="section-eyebrow">форматы и цены</div>
+    <h2 class="section-title">Занятия идут абонементами по 4 встречи</h2>
+    
+    <div class="pricing-grid">
+      <div class="price-card">
+        <h3>В группе</h3>
+        <p class="price-desc">Полтора часа · до 5 человек</p>
+        <div class="price-amount">2 000 ₽</div>
+        <div class="price-unit">за занятие</div>
+        <ul class="price-features">
+          <li>Полтора часа практики</li>
+          <li>Атмосфера лёгкого общения</li>
+          <li>Дешевле индивидуальных</li>
+          <li>Группы по уровню</li>
+        </ul>
+      </div>
+      
+      <div class="price-card featured">
+        <div class="price-badge">популярный</div>
+        <h3>В паре</h3>
+        <p class="price-desc">Один час · с другом или партнёром</p>
+        <div class="price-amount">2 500 ₽</div>
+        <div class="price-unit">за занятие с человека</div>
+        <ul class="price-features">
+          <li>Внимание почти как на индивидуальных</li>
+          <li>Учиться вдвоём — веселее</li>
+          <li>Поддержка и взаимный прогресс</li>
+          <li>Можно с другом, парой, коллегой</li>
+        </ul>
+      </div>
+      
+      <div class="price-card">
+        <h3>Индивидуально</h3>
+        <p class="price-desc">Один час · только ты и я</p>
+        <div class="price-amount">3 000 ₽</div>
+        <div class="price-unit">за занятие</div>
+        <ul class="price-features">
+          <li>Программа под тебя лично</li>
+          <li>Максимальная скорость прогресса</li>
+          <li>Удобное расписание</li>
+          <li>Все материалы под твою цель</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ПРАВИЛА РАБОТЫ -->
+<section class="rules">
+  <div class="container">
+    <div class="section-eyebrow">как мы работаем</div>
+    <h2 class="section-title">Несколько важных моментов</h2>
+    
+    <div class="rules-grid">
+      <div class="rule-item">
+        <h3>Оплата по абонементам</h3>
+        <p>Работаю по системе абонементов — 4 занятия в каждом. Так удобнее планировать расписание и видеть прогресс.</p>
+      </div>
+      <div class="rule-item">
+        <h3>Перенос и отмена занятий</h3>
+        <p>Если нужно перенести или отменить занятие — необходимо предупредить минимум за 6 часов. Это нужно, чтобы я могла обезопасить себя от потери времени. Форс-мажоры бывают у всех — их учитываем отдельно, но на то они и форс-мажоры, что случаются редко :)</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ОТЗЫВЫ -->
+<section class="reviews">
+  <div class="container">
+    <div class="section-eyebrow">отзывы учеников</div>
+    <h2 class="section-title">Что говорят те, кто уже занимается</h2>
+    
+    <div class="reviews-grid">
+      <div class="review">
+        <p class="review-text">Занимаюсь с Мари на протяжении 2 лет, она всегда очень чутко понимает, что мне надо, подстраивается под мою цель и <strong>гибко перестраивается, если мне надо что-то повторить</strong>. Мне очень нравится формат уроков, всегда есть чёткая структура и уроки реально интересные! Я всегда жду с нетерпением наших уроков, потому что темы всегда вовлекающие и их хочется обсуждать! <strong>С прошлым преподавателем никогда не делала дз, а с Мари никогда не пропускала выполнение заданий</strong>, потому что задания реально классные!</p>
+        <div class="review-author">Анна · 2 года занятий</div>
+      </div>
+      
+      <div class="review">
+        <p class="review-text">Мари — очень разносторонний и квалифицированный преподаватель, я рад заниматься с ней, потому что уроки очень понятные, интересные и нескучные. Мы всегда двигаемся чётко по структуре, <strong>нет давления на уроке, но при этом есть дисциплина</strong>. В общем очень рекомендую именно Мари для испанского языка.</p>
+        <div class="review-author">Иван</div>
+      </div>
+      
+      <div class="review">
+        <p class="review-text">На уроках я чувствую себя очень комфортно, темп очень размеренный и материал всегда понятный. <strong>Я спокойно разговариваю и не боюсь совершить ошибки</strong>, Мари очень понимающая, располагающая и <strong>терпеливая, даже когда я могу что-то забыть</strong>. Спасибо Мари за её спокойствие и профессионализм, люблю наши уроки!</p>
+        <div class="review-author">Алёна</div>
+      </div>
+      
+      <div class="review">
+        <p class="review-text">Мы занимаемся уже несколько месяцев и я чувствую прогресс, который был мне так необходим. <strong>Сейчас я переехала в Испанию и уже могу поддержать диалог в магазине</strong>, хотя раньше думала, что никогда не заговорю с испанцем на их языке. Круто, что Мари всегда подбирает материал под запрос.</p>
+        <div class="review-author">Мария · переехала в Испанию</div>
+      </div>
+      
+      <div class="review">
+        <p class="review-text">Мне очень комфортно на наших уроках, я чувствую, что иду в правильном направлении, потому что <strong>ещё пару уроков назад я не могла сказать ни слова, а сейчас могу рассказать о себе на испанском</strong>. Мария с первого урока погружает в атмосферу Испании и <strong>даёт не только язык, но и культуру, историю и географию</strong> изучаемого языка! Очень рада заниматься с Марией!</p>
+        <div class="review-author">Наталья · начинала с нуля</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ФИНАЛЬНЫЙ CTA -->
+<section class="final-cta">
+  <div class="container">
+    <div class="final-cta-inner">
+      <div class="final-cta-text">
+        <h2>Готов начать говорить по-испански?</h2>
+        <p>Если у тебя остались вопросы — напиши мне в Telegram. Обсудим твою цель, подберём формат и договоримся о первой встрече.</p>
+        <a href="https://t.me/fifusya" target="_blank" class="btn-primary">Написать в Telegram</a>
+      </div>
+      <div class="final-cta-image">
+        <img src="https://i.ibb.co/PsVfcjQ2/IMG-9760.jpg" alt="Мари — преподаватель испанского">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ФУТЕР -->
+<footer>
+  <div class="container">
+    <p>español con Marí · испанский язык онлайн · 2026</p>
+  </div>
+</footer>
+
+<!-- МОДАЛКА ДЛЯ УВЕЛИЧЕНИЯ КАРТИНОК -->
+<div class="modal-overlay" id="imageModal" onclick="closeModal()">
+  <button class="modal-close" onclick="closeModal()">×</button>
+  <img id="modalImage" src="" alt="">
+</div>
+
+<script>
+  // Плавное появление секций при скролле
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('section').forEach(section => {
+    section.classList.add('fade-in');
+    observer.observe(section);
+  });
+
+  // Открытие/закрытие модалки с дипломом
+  function openModal(imageUrl) {
+    const modal = document.getElementById('imageModal');
+    const modalImg = document.getElementById('modalImage');
+    modalImg.src = imageUrl;
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    document.getElementById('imageModal').classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  // Закрытие по Escape
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeModal();
+  });
+</script>
+
+</body>
+</html>
